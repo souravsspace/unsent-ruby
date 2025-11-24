@@ -6,11 +6,11 @@ module Unsent
       @client = client
     end
 
-    def send(payload)
-      create(payload)
+    def send(payload, options = {})
+      create(payload, options)
     end
 
-    def create(payload)
+    def create(payload, options = {})
       # Normalize from_ to from
       payload = payload.dup
       payload[:from] = payload.delete(:from_) if payload.key?(:from_) && !payload.key?(:from)
@@ -20,10 +20,13 @@ module Unsent
         payload[:scheduledAt] = payload[:scheduledAt].iso8601
       end
 
-      @client.post("/emails", payload)
+      headers = {}
+      headers["Idempotency-Key"] = options[:idempotency_key] if options[:idempotency_key]
+
+      @client.post("/emails", payload, headers)
     end
 
-    def batch(emails)
+    def batch(emails, options = {})
       items = emails.map do |email|
         email = email.dup
         email[:from] = email.delete(:from_) if email.key?(:from_) && !email.key?(:from)
@@ -31,7 +34,10 @@ module Unsent
         email
       end
 
-      @client.post("/emails/batch", items)
+      headers = {}
+      headers["Idempotency-Key"] = options[:idempotency_key] if options[:idempotency_key]
+
+      @client.post("/emails/batch", items, headers)
     end
 
     def get(email_id)

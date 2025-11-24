@@ -109,6 +109,21 @@ data, error = client.emails.batch(emails)
 puts "Sent #{data['emails'].length} emails" if data
 ```
 
+#### Idempotent Retries
+
+To prevent duplicate emails when retrying failed requests, you can provide an idempotency key.
+
+```ruby
+data, error = client.emails.send({
+  to: 'user@example.com',
+  from: 'no-reply@yourdomain.com',
+  subject: 'Welcome',
+  html: '<strong>Hello!</strong>'
+}, {
+  idempotency_key: 'unique-key-123'
+})
+```
+
 ### Managing Emails
 
 #### Get Email

@@ -26,7 +26,7 @@ module Unsent
       @domains = Domains.new(self)
     end
 
-    def request(method, path, body = nil)
+    def request(method, path, body = nil, headers = {})
       uri = URI("#{@url}#{path}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = uri.scheme == "https"
@@ -42,6 +42,11 @@ module Unsent
 
       request["Authorization"] = "Bearer #{@key}"
       request["Content-Type"] = "application/json"
+      
+      headers.each do |key, value|
+        request[key] = value
+      end
+
       request.body = body.to_json if body
 
       response = http.request(request)
@@ -67,24 +72,24 @@ module Unsent
       end
     end
 
-    def post(path, body)
-      request("POST", path, body)
+    def post(path, body, headers = {})
+      request("POST", path, body, headers)
     end
 
-    def get(path)
-      request("GET", path)
+    def get(path, headers = {})
+      request("GET", path, nil, headers)
     end
 
-    def put(path, body)
-      request("PUT", path, body)
+    def put(path, body, headers = {})
+      request("PUT", path, body, headers)
     end
 
-    def patch(path, body)
-      request("PATCH", path, body)
+    def patch(path, body, headers = {})
+      request("PATCH", path, body, headers)
     end
 
-    def delete(path, body = nil)
-      request("DELETE", path, body)
+    def delete(path, body = nil, headers = {})
+      request("DELETE", path, body, headers)
     end
   end
 end
