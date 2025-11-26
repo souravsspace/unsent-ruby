@@ -35,7 +35,7 @@ gem install unsent
 ```ruby
 require 'unsent'
 
-client = Unsent::Client.new('us_xxx')
+client = Unsent::Client.new('un_xxx')
 ```
 
 ### Environment Variables
@@ -267,7 +267,7 @@ end
 To handle errors as return values instead:
 
 ```ruby
-client = Unsent::Client.new('us_xxx', raise_on_error: false)
+client = Unsent::Client.new('un_xxx', raise_on_error: false)
 
 data, error = client.emails.get('email_123')
 if error
