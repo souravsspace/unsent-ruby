@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Unsent
+  class Error < StandardError; end
+
   class HTTPError < Error
     attr_reader :status_code, :error, :method, :path
 

@@ -53,5 +53,52 @@ module Unsent
     def cancel(email_id)
       @client.post("/emails/#{email_id}/cancel", {})
     end
+
+    def list(query = {})
+      params = []
+      params << "page=#{query[:page]}" if query[:page]
+      params << "limit=#{query[:limit]}" if query[:limit]
+      params << "startDate=#{query[:startDate]}" if query[:startDate]
+      params << "endDate=#{query[:endDate]}" if query[:endDate]
+      
+      # Handle domainId as both string and array
+      if query[:domainId]
+        if query[:domainId].is_a?(Array)
+          query[:domainId].each { |id| params << "domainId=#{id}" }
+        else
+          params << "domainId=#{query[:domainId]}"
+        end
+      end
+      
+      query_string = params.empty? ? '' : "?#{params.join('&')}"
+      @client.get("/emails#{query_string}")
+    end
+
+    def get_complaints(query = {})
+      params = []
+      params << "page=#{query[:page]}" if query[:page]
+      params << "limit=#{query[:limit]}" if query[:limit]
+      
+      query_string = params.empty? ? '' : "?#{params.join('&')}"
+      @client.get("/emails/complaints#{query_string}")
+    end
+
+    def get_bounces(query = {})
+      params = []
+      params << "page=#{query[:page]}" if query[:page]
+      params << "limit=#{query[:limit]}" if query[:limit]
+      
+      query_string = params.empty? ? '' : "?#{params.join('&')}"
+      @client.get("/emails/bounces#{query_string}")
+    end
+
+    def get_unsubscribes(query = {})
+      params = []
+      params << "page=#{query[:page]}" if query[:page]
+      params << "limit=#{query[:limit]}" if query[:limit]
+      
+      query_string = params.empty? ? '' : "?#{params.join('&')}"
+      @client.get("/emails/unsubscribes#{query_string}")
+    end
   end
 end

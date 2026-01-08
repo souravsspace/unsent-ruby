@@ -6,6 +6,17 @@ module Unsent
       @client = client
     end
 
+    def list(book_id, query = {})
+      params = []
+      params << "emails=#{query[:emails]}" if query[:emails]
+      params << "page=#{query[:page]}" if query[:page]
+      params << "limit=#{query[:limit]}" if query[:limit]
+      params << "ids=#{query[:ids]}" if query[:ids]
+      
+      query_string = params.empty? ? '' : "?#{params.join('&')}"
+      @client.get("/contactBooks/#{book_id}/contacts#{query_string}")
+    end
+
     def create(book_id, payload)
       @client.post("/contactBooks/#{book_id}/contacts", payload)
     end

@@ -277,6 +277,262 @@ else
 end
 ```
 
+## Email Management
+
+### List Emails
+
+Retrieve a paginated list of emails with optional filters:
+
+```ruby
+data, error = client.emails.list(
+  page: 1,
+  limit: 10,
+  startDate: '2024-01-01',
+  endDate: '2024-01-31',
+  domainId: 'domain_123'
+)
+
+# Support for multiple domain IDs
+data, error = client.emails.list(domainId: ['domain_1', 'domain_2'])
+```
+
+### Email Statistics
+
+```ruby
+# Get complaints
+data, error = client.emails.get_complaints(page: 1, limit: 10)
+
+# Get bounces
+data, error = client.emails.get_bounces(page: 1, limit: 10)
+
+# Get unsubscribes
+data, error = client.emails.get_unsubscribes(page: 1, limit: 10)
+```
+
+## Contact Books
+
+Organize your contacts into separate books.
+
+### Create Contact Book
+
+```ruby
+data, error = client.contact_books.create(
+  name: 'Newsletter Subscribers',
+  emoji: '📧'
+)
+```
+
+### List Contact Books
+
+```ruby
+books, error = client.contact_books.list
+books.each { |book| puts book['name'] }
+```
+
+### Get Contact Book
+
+```ruby
+book, error = client.contact_books.get('book_123')
+```
+
+### Update Contact Book
+
+```ruby
+data, error = client.contact_books.update('book_123', name: 'Updated Name')
+```
+
+### Delete Contact Book
+
+```ruby
+data, error = client.contact_books.delete('book_123')
+```
+
+## Contacts
+
+### List Contacts
+
+```ruby
+data, error = client.contacts.list('book_123',
+  page: 1,
+  limit: 10,
+  search: 'john@example.com'
+)
+```
+
+## Campaigns
+
+### List Campaigns
+
+```ruby
+campaigns, error = client.campaigns.list
+```
+
+## Analytics
+
+Get insights into your email sending performance.
+
+### Overall Analytics
+
+```ruby
+data, error = client.analytics.get
+puts "Sent: #{data['sent']}, Delivered: #{data['delivered']}"
+```
+
+### Time Series Data
+
+```ruby
+data, error = client.analytics.get_time_series(
+  days: 30,
+  domain: 'yourdomain.com'
+)
+```
+
+### Reputation Score
+
+```ruby
+data, error = client.analytics.get_reputation(domain: 'yourdomain.com')
+puts "Reputation Score: #{data['score']}"
+```
+
+## Templates
+
+Manage reusable email templates.
+
+### Create Template
+
+```ruby
+data, error = client.templates.create(
+  name: 'Welcome Email',
+  subject: 'Welcome to {{companyName}}!',
+  html: '<h1>Welcome {{firstName}}!</h1>'
+)
+```
+
+### List Templates
+
+```ruby
+templates, error = client.templates.list
+```
+
+### Get Template
+
+```ruby
+template, error = client.templates.get('template_123')
+```
+
+### Update Template
+
+```ruby
+data, error = client.templates.update('template_123',
+  subject: 'Updated Subject'
+)
+```
+
+### Delete Template
+
+```ruby
+data, error = client.templates.delete('template_123')
+```
+
+## Suppressions
+
+Manage your email suppression list.
+
+### List Suppressions
+
+```ruby
+data, error = client.suppressions.list(
+  page: 1,
+  limit: 10,
+  reason: 'MANUAL',
+  search: 'user@'
+)
+```
+
+### Add to Suppression List
+
+```ruby
+data, error = client.suppressions.add(
+  email: 'blocked@example.com',
+  reason: 'MANUAL'
+)
+```
+
+### Remove from Suppression List
+
+```ruby
+data, error = client.suppressions.delete('blocked@example.com')
+```
+
+## API Keys
+
+Manage your API keys programmatically.
+
+### List API Keys
+
+```ruby
+keys, error = client.api_keys.list
+```
+
+### Create API Key
+
+```ruby
+data, error = client.api_keys.create(
+  name: 'Production Key',
+  permission: 'SENDING'
+)
+puts "New key: #{data['key']}"
+```
+
+### Delete API Key
+
+```ruby
+data, error = client.api_keys.delete('key_123')
+```
+
+## Webhooks
+
+> **Note**: Webhooks are currently a future feature and are documented here for reference.
+
+Configure webhooks to receive real-time notifications.
+
+### List Webhooks
+
+```ruby
+webhooks, error = client.webhooks.list
+```
+
+### Create Webhook
+
+```ruby
+data, error = client.webhooks.create(
+  url: 'https://yourdomain.com/webhooks',
+  events: ['email.sent', 'email.delivered', 'email.bounced']
+)
+```
+
+### Update Webhook
+
+```ruby
+data, error = client.webhooks.update('webhook_123',
+  url: 'https://yourdomain.com/updated-webhook'
+)
+```
+
+### Delete Webhook
+
+```ruby
+data, error = client.webhooks.delete('webhook_123')
+```
+
+## Settings
+
+Retrieve account settings.
+
+```ruby
+settings, error = client.settings.get
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests.

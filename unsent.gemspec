@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
   spec.description = "Official Ruby SDK for the Unsent API. Send transactional emails, manage contacts, campaigns, and domains."
   spec.homepage = "https://unsent.dev"
   spec.license = "MIT"
-  spec.required_ruby_version = ">= 3.0.0"
+  spec.required_ruby_version = ">= 3.4.8"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/souravsspace/unsent-ruby"

@@ -6,6 +6,10 @@ module Unsent
       @client = client
     end
 
+    def list
+      @client.get('/campaigns')
+    end
+
     def create(payload)
       @client.post("/campaigns", payload)
     end
