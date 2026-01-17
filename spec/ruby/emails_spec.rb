@@ -67,4 +67,38 @@ RSpec.describe Unsent::Emails do
       expect(data).to have_key('data')
     end
   end
+
+  describe '#get_events' do
+    it 'fetches events for a specific email' do
+      stub_request(:get, "https://api.unsent.dev/v1/emails/email_123/events?page=1&limit=10")
+        .to_return(
+          status: 200,
+          body: {
+            data: [
+              { type: 'email.sent', timestamp: '2024-01-01T00:00:00Z' },
+              { type: 'email.delivered', timestamp: '2024-01-01T00:05:00Z' }
+            ],
+            count: 2
+          }.to_json
+        )
+
+      data, error = emails.get_events('email_123', page: 1, limit: 10)
+      expect(error).to be_nil
+      expect(data).to have_key('data')
+      expect(data['data']).to be_an(Array)
+      expect(data['count']).to eq(2)
+    end
+
+    it 'handles pagination for email events' do
+      stub_request(:get, "https://api.unsent.dev/v1/emails/email_456/events?page=2&limit=20")
+        .to_return(
+          status: 200,
+          body: { data: [], count: 0 }.to_json
+        )
+
+      data, error = emails.get_events('email_456', page: 2, limit: 20)
+      expect(error).to be_nil
+      expect(data).to have_key('data')
+    end
+  end
 end

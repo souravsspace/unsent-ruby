@@ -100,5 +100,20 @@ module Unsent
       query_string = params.empty? ? '' : "?#{params.join('&')}"
       @client.get("/emails/unsubscribes#{query_string}")
     end
+
+    # Get events for a specific email
+    # @param email_id [String] The email ID
+    # @param query [Hash] Query parameters
+    # @option query [Integer] :page Page number (default: 1)
+    # @option query [Integer] :limit Number of items per page (default: 50, max: 100)
+    # @return [Array] Response data and error
+    def get_events(email_id, query = {})
+      params = []
+      params << "page=#{query[:page]}" if query[:page]
+      params << "limit=#{query[:limit]}" if query[:limit]
+      
+      query_string = params.empty? ? '' : "?#{params.join('&')}"
+      @client.get("/emails/#{email_id}/events#{query_string}")
+    end
   end
 end

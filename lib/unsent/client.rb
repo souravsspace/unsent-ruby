@@ -9,7 +9,7 @@ module Unsent
     DEFAULT_BASE_URL = "https://api.unsent.dev"
 
     attr_reader :key, :url, :raise_on_error
-    attr_accessor :emails, :contacts, :campaigns, :domains, :analytics, :api_keys, :contact_books, :settings, :suppressions, :templates, :webhooks
+    attr_accessor :system, :emails, :contacts, :campaigns, :domains, :analytics, :api_keys, :contact_books, :settings, :suppressions, :templates, :webhooks, :events, :metrics, :stats, :activity, :teams
 
     def initialize(key = nil, url: nil, raise_on_error: true)
       @key = key || ENV["UNSENT_API_KEY"] || ENV["UNSENT_API_KEY"]
@@ -20,6 +20,7 @@ module Unsent
       @raise_on_error = raise_on_error
 
       # Initialize resource clients
+      @system = System.new(self)
       @emails = Emails.new(self)
       @contacts = Contacts.new(self)
       @campaigns = Campaigns.new(self)
@@ -31,6 +32,11 @@ module Unsent
       @suppressions = Suppressions.new(self)
       @templates = Templates.new(self)
       @webhooks = Webhooks.new(self)
+      @events = Events.new(self)
+      @metrics = Metrics.new(self)
+      @stats = Stats.new(self)
+      @activity = Activity.new(self)
+      @teams = Teams.new(self)
     end
 
     def request(method, path, body = nil, headers = {})
@@ -72,8 +78,7 @@ module Unsent
       end
 
       begin
-        data = JSON.parse(response.body)
-        [data, nil]
+        JSON.parse(response.body)
       rescue JSON::ParserError
         [nil, default_error]
       end

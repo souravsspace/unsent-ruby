@@ -307,13 +307,59 @@ data, error = client.emails.get_bounces(page: 1, limit: 10)
 
 # Get unsubscribes
 data, error = client.emails.get_unsubscribes(page: 1, limit: 10)
+
+# Get events for a specific email
+events, error = client.emails.get_events('email_123', page: 1, limit: 10)
+if events
+  events['data'].each do |event|
+    puts "Event: #{event['type']} at #{event['timestamp']}"
+  end
+end
 ```
 
-## Contact Books
+## Domains
 
-Organize your contacts into separate books.
+Manage your sending domains and retrieve domain-specific analytics.
 
-### Create Contact Book
+### Domain Analytics & Statistics
+
+```ruby
+# Get analytics for a specific domain
+data, error = client.domains.get_analytics('domain_123', days: 30)
+puts "Total sent: #{data['sent']}, Delivered: #{data['delivered']}" if data
+
+# Get analytics with custom date range
+data, error = client.domains.get_analytics(
+  'domain_123',
+  startDate: '2024-01-01',
+  endDate: '2024-01-31'
+)
+
+# Get domain statistics
+stats, error = client.domains.get_stats('domain_123', days: 7)
+puts "Bounce rate: #{stats['bounceRate']}%" if stats
+
+# Get stats with custom date range
+stats, error = client.domains.get_stats(
+  'domain_123',
+  startDate: '2024-01-01',
+  endDate: '2024-01-15'
+)
+```
+
+### Domain Management
+
+#### List Domains
+
+```ruby
+domains, error = client.domains.list
+domains.each do |domain|
+  puts "Domain: #{domain['domain']}, Status: #{domain['status']}"
+end if domains
+```
+
+#### Create Domain
+
 
 ```ruby
 data, error = client.contact_books.create(
